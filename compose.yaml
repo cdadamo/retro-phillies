@@ -1,0 +1,20 @@
+services:
+  retro-phillies:
+    build: ./companion
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 32
+    mem_limit: 192m
+    cpus: 0.5
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8767/health',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+networks:
+  default:
+    name: retro-phillies
